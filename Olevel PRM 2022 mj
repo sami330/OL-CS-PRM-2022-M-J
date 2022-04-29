@@ -1,0 +1,206 @@
+TASK 1 ----> DISPLAY THE WHOLE SCENARIO OF TICKETS TO THE CUSTOMERS
+
+declare array ticketdetail() = {"","adult ticket","child ticket","senior ticket","family ticket","group ticket"} : string
+declare array attractiondetail() as string = {"","lion feeding","penguin feeding","evening BBQ (2 day ticket)"} : string
+declare array days() = {"","monday","tueday","wednesday","thursday","friday","saturday","sunday","monday"} : double
+declare array pricetick()  = {0,20.0,12.0,16.0,60.0,15.0,30.0,18.0,24.0,90.0,22.5} : double
+declare array priceattraction()  = {0,2.5,2.0,5.0} : double
+
+output "======================================================="
+output "WILDLIFE PART TICKETS"
+output "TICKET TYPES & PRICES"
+
+for count = 1 to 4 
+  output count + " " + ticketdetail(count) + "FOR 1 DAY = $" + pricetick(count) + "FOR 2 DAYS = $" + pricetick(count + 5)
+endfor
+
+  output "EXTRA ATTRACTIONS"
+for count = 1 to 3
+  output count + " " + attractiondetail(count) + "PRICE = $" + priceattraction(count)
+endfor
+
+  output "DAYS AVAILABLE FOR THE BOOKING"
+for count = 1 to 7 
+  output count + ") " + days(count)
+endfor
+output "======================================================="
+
+
+TAST 2 ----> INPUT THE TICKET TYPE AND CALCULATE THE TOTAL TICKET COST
+
+declare moreentries,moreticket,moreattraction : char
+declare array attract() = {1.0,1.0,1.0,1.0} : double
+declare ticketcost,totalticketcost=0,totalattractioncost=0 : double
+declare tickets,day,ticketchoice,daycode,adult=0,children,senior,nooffamily=0,groupticket=0,totalgrouppeople,noofticket=0,bookingno=0,groupadult=0,groupchildren=0,groupsenior=0 : integer
+
+  output "enter how many days u wanna book, 1 or 2 ?"
+input day
+ while (day < 1 OR day > 2) Do
+  output "invalid day booked, kindly reenter your value"
+input day
+ endwhile
+
+output "enter days selected for booking, 1-> MONDAY ---- 7-> SUNDAY"
+ input daycode
+   while (daycode < 1 OR daycode > 7) Do
+  output "invalid day selection , kindly reenter your value : "
+ input daycode
+endwhile 
+
+  Repeat
+
+output "ENTER YOUR TICKET TYPE"
+output "1--> PURCHASE ADULT TICKETS"
+output "2--> PURCHASE CHILDREN TICKETS"
+output "3--> PURCHASE SENIOR TICKETS"
+output "4--> PURCHASE FAMILY TICKET OF 5 PERSON"
+output "5--> PURCHASE GROUP TICKET (Any Age)"
+
+Case Of ticketchoice 
+
+ input ticketchoice
+
+  while (ticketchoice < 1 OR ticketchoice > 5 ) Do
+    output "invalid Ticket Type , kindly reenter your choice"
+    input ticketchoice
+endwhile
+
+  if (adult = 0 AND ticketchoice = 2) then output "childrens are not allowed without adults, kindly enter adults first "
+     input ticketchoice
+  end if
+
+1 : output "enter number of adult tickets ?"
+input tickets
+adult = tickets + adult
+   if (day = 2) then ticketchoice = ticketchoice + 5
+   end if
+ticketcost = pricetick(ticketchoice) * tickets
+
+
+2 : output "enter number of childrens : "
+ input tickets
+  while (tickets > (Adult*2))
+ output "children limit exeeded, please input again"
+ input tickets
+  endwhile
+children = children + tickets
+
+  if (day = 2) then ticketchoice = ticketchoice + 5
+  endif
+ticketcost = pricetick(ticketchoice) * tickets
+
+
+3 : output "enter number of senior tickets"
+ input tickets
+senior = senior + tickets
+  if (day = 2) then ticketchoice = ticketchoice + 5
+  end if
+ticketcost = pricetick(ticketchoice) * tickets
+
+
+4 : output "enter number of family tickets which consist of 3 children and up to 2 adults or seniors:"
+input tickets
+nooffamily = tickets + nooffamily
+  if (day = 2) then ticketchoice = ticketchoice + 5
+  end if
+ticketcost = pricetick(ticketchoice) * tickets
+
+
+5 : output "enter number of adult tickets ?"
+input groupadult
+  output (groupadult*2) + " children can be added, enter number of children: "
+  input groupchildren
+   while (groupchildren > (groupadult*2))
+  output "group children limit exeeded, please input again: "
+  input groupchildren
+   endwhile
+  output "enter number of seniors in the group ?"
+  input groupsenior
+
+tickets = groupadult + groupchildren + groupsenior
+totalgrouppeople = groupadult + groupchildren + groupsenior
+
+ if (tickets <= 6) then output "Group is less than 6 therefore group ticket is not booked"
+  else  
+  groupticket = groupticket + 1
+     if (day = 2) then ticketchoice = ticketchoice + 5
+     end if
+ ticketcost = pricetick(ticketchoice) * tickets 
+
+ Endcase
+
+totalticketcost = ticketcost + totalticketcost
+
+ output "do you want to add more tickets (Y/N) ? "
+ input moreticket
+
+  until moreticket = "Y"
+
+
+
+nooftickets = adult + children + senior + nooffamily + groupticket
+
+  output"do you want to add attractions for same day  (Y/N) ?"
+ repeat
+  input moreattraction
+
+  If moreattraction = "Y"
+     if day = 2 then i = 3  
+    else i = 2
+     end if
+
+ for count = 1 to i
+  output count " --> " + attractiondetail(count)
+ endfor
+ 
+  output " enter the extra attraction you want to choose :"
+  input choice
+ attract(choice) = attract(choice) * priceattraction(choice)
+  totalattractioncost = attract(choice) + totalattractioncost
+ Endfor
+
+  end if
+
+Until moreattraction = "N"
+
+
+
+output "total number of tickets are : " + nooftickets
+bookingno = bookingno + 1
+  output "your booking number : MLP-" + 555 + bookingno
+ if day = 1 then output "day/days booked are :" & days(daycode)
+ else output "day/days booked are :" & days(daycode) + "AND" & days(daycode+1)
+ end if
+output "cost of tickets : $" + totalticketcost
+output "cost of attractions : $" + totalattractioncost
+output "total cost : $" + (totalattractioncost + totalticketcost)
+output "======================================================="
+
+
+TASK 3 ---->  OFFER THE BEST SUGGESTED PLAN TO BUY TICKETS IN AN EFFECTIVE WAY AND SAVE YOUR MONEY 
+
+declare PeopleCost, GroupCost, FamilyCost, FactorValueChildren, FactorModChildren, FactorvalueAdults : double
+declare people : integer
+
+PeopleCost = 0
+GroupCost = 0
+FamilyCost = 0
+
+  if TotalGroupPeople >= 10 Then
+FactorValueChildren = GroupChildren / 3 
+FactorvalueAdults = GroupAdults / 2  
+FactorModChildren = GroupChildren Mod 3
+  If (FactorValueChildren >= 2) And (FactorModChildren = 0) And (FactorvalueAdults = 
+FactorValueChildren) And GroupSeniors = 0 Then
+
+  if day = 1 then  GroupCost = (GroupAdults + GroupChildren + GroupSeniors) * 15 : 
+FamilyCost = 60 * FactorValueChildren
+  else if (day = 2) then GroupCost = (GroupAdults + GroupChildren + GroupSeniors) * 22.5 : 
+FamilyCost = 90 * FactorValueChildren
+  end if
+
+  if GroupCost > FamilyCost Then
+ output "Group Ticket Cost:- " + GroupCost
+output "Selecting " + FactorValueChildren + " Family Ticket(s) is Best Offer
+than Group. Family Tickets Cost :- " + FamilyCost
+  end if
